@@ -1,0 +1,45 @@
+# Folder node_modules yang berisi semua dependency
+node_modules/
+
+# Log file dan laporan error
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Folder environment
+.env
+.env.test
+.env.production
+.env.local
+
+# File sistem
+.DS_Store
+Thumbs.db
+
+# Folder coverage dari testing (misalnya Jest)
+coverage/
+
+# Output build (jika ada)
+dist/
+build/
+
+# Folder cache
+.cache/
+.next/
+out/
+.tmp/
+temp/
+
+# VS Code dan IDE lainnya
+.vscode/
+.idea/
+
+# TypeScript build output (jika kamu pakai TS)
+*.tsbuildinfo
+
+# Optional: ignore lockfile tertentu jika kamu hanya pakai satu package manager
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
