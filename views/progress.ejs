@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mengirim Email...</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f6fbff;
+    }
+    #progress-container {
+      width: 80%;
+      margin: auto;
+      background: #ddd;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 30px;
+    }
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #28a745;
+      color: white;
+      line-height: 30px;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Sedang mengirim email...</h2>
+  <div id="progress-container">
+    <div id="progress-bar">0%</div>
+  </div>
+
+  <script>
+    let interval = setInterval(async () => {
+      const res = await fetch('/progress');
+      const data = await res.json();
+
+      const percent = Math.round((data.sent / data.total) * 100);
+      const bar = document.getElementById('progress-bar');
+      bar.style.width = percent + '%';
+      bar.textContent = percent + '%';
+
+      if (data.sent >= data.total) {
+        clearInterval(interval);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
