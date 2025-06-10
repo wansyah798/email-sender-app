@@ -2,203 +2,97 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Upload Email & Lampiran</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            padding: 30px;
-        }
-
-        .container {
-            max-width: 700px;
-            margin: auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        label {
-            font-weight: bold;
-        }
-
-        textarea {
-            width: 100%;
-            height: 150px;
-            margin-top: 5px;
-        }
-
-        input[type="file"] {
-            width: 100%;
-            margin-top: 5px;
-        }
-
-        button {
-            margin-top: 20px;
-            width: 100%;
-            padding: 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        #dropzone {
-            border: 2px dashed #999;
-            padding: 30px;
-            text-align: center;
-            color: #666;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 8px;
-            background-color: #fafafa;
-            position: relative;
-        }
-
-        #dropzone input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-        #filePreviewList {
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
-}
-#filePreviewList li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #f1f1f1;
-  margin-bottom: 5px;
-  padding: 8px 12px;
-  border-radius: 5px;
-}
-.file-name {
-  flex: 1;
-}
-button.preview, button.remove {
-  margin-left: 10px;
-  padding: 5px 8px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button.preview {
-  background: #007bff;
-  color: white;
-}
-button.remove {
-  background: #dc3545;
-  color: white;
-}
-
-    </style>
+  <meta charset="UTF-8">
+  <title>Upload Email & Lampiran</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 
 <body>
-    <div class="container">
-        <h2>Upload Daftar Email & Lampiran</h2>
-        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-            <label>Email Data (Format JSON):</label>
-            <textarea name="emailData">[
+  <div class="container">
+    <h2>Upload Daftar Email & Lampiran</h2>
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+      <label>Email Data (Format JSON):</label>
+      <textarea name="emailData">[
             { "name": "john", "email": "john@example.com" },
             { "name": "jane", "email": "jane@example.com" }
           ]</textarea>
 
-            <label>Lampiran (drag & drop di bawah):</label>
-            <label>Lampiran (drag & drop atau klik):</label>
-                <div id="dropzone">
-                <p>Drop file di sini atau klik untuk memilih</p>
-                    <input type="file" name="attachments" id="fileInput" multiple required>
-                </div>
+      <label>Lampiran (drag & drop di bawah):</label>
+      <label>Lampiran (drag & drop atau klik):</label>
+      <div id="dropzone">
+        <p>Drop file di sini atau klik untuk memilih</p>
+        <input type="file" name="attachments" id="fileInput" multiple required>
+      </div>
 
-                <!-- Preview list -->
-                <ul id="filePreviewList"></ul>
-            <button type="submit">Lanjutkan ke Preview</button>
-        </form>
+      <!-- Preview list -->
+      <ul id="filePreviewList"></ul>
+      <button type="submit">Lanjutkan ke Preview</button>
+    </form>
 
-    </div>
+  </div>
 
-    <script>
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('fileInput');
-  const fileList = document.getElementById('filePreviewList');
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('filePreviewList');
 
-  // Simpan daftar file sementara (karena fileInput.files tidak bisa diubah langsung)
-  let uploadedFiles = [];
+    // Simpan daftar file sementara (karena fileInput.files tidak bisa diubah langsung)
+    let uploadedFiles = [];
 
-  dropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.style.backgroundColor = '#e6f7ff';
-  });
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.style.backgroundColor = '#e6f7ff';
+    });
 
-  dropzone.addEventListener('dragleave', () => {
-    dropzone.style.backgroundColor = '#fafafa';
-  });
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.style.backgroundColor = '#fafafa';
+    });
 
-  dropzone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzone.style.backgroundColor = '#fafafa';
-    const files = Array.from(e.dataTransfer.files);
-    handleFiles(files);
-  });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.style.backgroundColor = '#fafafa';
+      const files = Array.from(e.dataTransfer.files);
+      handleFiles(files);
+    });
 
-  fileInput.addEventListener('change', () => {
-    handleFiles(Array.from(fileInput.files));
-  });
+    fileInput.addEventListener('change', () => {
+      handleFiles(Array.from(fileInput.files));
+    });
 
-  function handleFiles(files) {
-    uploadedFiles = [...uploadedFiles, ...files];
-    renderFileList();
-  }
+    function handleFiles(files) {
+      uploadedFiles = [...uploadedFiles, ...files];
+      renderFileList();
+    }
 
-  function renderFileList() {
-    fileList.innerHTML = '';
-    uploadedFiles.forEach((file, index) => {
-      const li = document.createElement('li');
-      li.innerHTML = `
+    function renderFileList() {
+      fileList.innerHTML = '';
+      uploadedFiles.forEach((file, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
         <span class="file-name">${file.name} (${file.type || 'unknown'})</span>
         <button type="button" class="preview" onclick="previewFile(${index})">Preview</button>
         <button type="button" class="remove" onclick="removeFile(${index})">Hapus</button>
       `;
-      fileList.appendChild(li);
-    });
+        fileList.appendChild(li);
+      });
 
-    // Update fileInput agar tetap bisa dikirim via form
-    const dataTransfer = new DataTransfer();
-    uploadedFiles.forEach(file => dataTransfer.items.add(file));
-    fileInput.files = dataTransfer.files;
-  }
+      // Update fileInput agar tetap bisa dikirim via form
+      const dataTransfer = new DataTransfer();
+      uploadedFiles.forEach(file => dataTransfer.items.add(file));
+      fileInput.files = dataTransfer.files;
+    }
 
-  function removeFile(index) {
-    uploadedFiles.splice(index, 1);
-    renderFileList();
-  }
+    function removeFile(index) {
+      uploadedFiles.splice(index, 1);
+      renderFileList();
+    }
 
-  function previewFile(index) {
-    const file = uploadedFiles[index];
-    const url = URL.createObjectURL(file);
-    window.open(url, '_blank');
-  }
-</script>
+    function previewFile(index) {
+      const file = uploadedFiles[index];
+      const url = URL.createObjectURL(file);
+      window.open(url, '_blank');
+    }
+  </script>
 
 
 </body>
